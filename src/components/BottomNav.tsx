@@ -13,7 +13,7 @@ export default function BottomNav() {
   const location = useLocation()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-peach-200 safe-bottom">
       <div className="flex items-center justify-around h-16">
         {tabs.map(({ to, icon: Icon, label }) => {
           const active = location.pathname === to || location.pathname.startsWith(to + '/')
@@ -25,10 +25,10 @@ export default function BottomNav() {
             >
               <Icon
                 size={22}
-                className={active ? 'text-brand-400' : 'text-slate-500'}
+                className={active ? 'text-brand-500' : 'text-warm-400'}
                 strokeWidth={active ? 2.5 : 2}
               />
-              <span className={`text-[10px] font-medium ${active ? 'text-brand-400' : 'text-slate-500'}`}>
+              <span className={`text-[10px] font-medium ${active ? 'text-brand-500' : 'text-warm-400'}`}>
                 {label}
               </span>
             </NavLink>

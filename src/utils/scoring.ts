@@ -47,17 +47,17 @@ export function scoreQuergia(entry: QuergiaEntry | undefined): number {
 }
 
 export const AREA_COLORS: Record<string, string> = {
-  body: '#10b981',
-  finances: '#f59e0b',
-  mental: '#6366f1',
-  relationships: '#ec4899',
-  quergia: '#3b82f6',
+  body:          '#e07968', // coral
+  finances:      '#16193b', // navy
+  mental:        '#c48f64', // warm peach-amber
+  relationships: '#e8a895', // light coral
+  quergia:       '#8b90c8', // periwinkle
 }
 
 export const AREA_LABELS: Record<string, string> = {
-  body: 'Body',
-  finances: 'Finances',
-  mental: 'Mental',
+  body:          'Body',
+  finances:      'Finances',
+  mental:        'Mental',
   relationships: 'Relations',
-  quergia: 'QUERGIA',
+  quergia:       'QUERGIA',
 }

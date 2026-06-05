@@ -7,9 +7,7 @@ import PageHeader from '../../components/PageHeader'
 import type { FinanceEntry, ExpenseItem, LearningItem } from '../../types'
 
 const DATE = today()
-
 function genId() { return Math.random().toString(36).slice(2, 10) }
-
 const CATEGORIES = ['Food', 'Transport', 'Health', 'Education', 'Entertainment', 'Business', 'Other']
 const LEARNING_TYPES: LearningItem['type'][] = ['course', 'book', 'podcast', 'video', 'article']
 
@@ -37,15 +35,13 @@ export default function FinancesPage() {
 
   async function load() {
     const e = await getOrCreate()
-    setEntry(e)
-    setScore(scoreFinances(e))
+    setEntry(e); setScore(scoreFinances(e))
     if (e.income) setIncomeInput(String(e.income))
   }
 
   async function save(patch: Partial<FinanceEntry>) {
     const updated = { ...entry, ...patch }
-    setEntry(updated)
-    setScore(scoreFinances(updated))
+    setEntry(updated); setScore(scoreFinances(updated))
     if (updated.id) await db.finances.update(updated.id, patch)
   }
 
@@ -72,64 +68,62 @@ export default function FinancesPage() {
   const balance = entry.income - totalExpenses
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950">
-      <PageHeader
-        title="Finances"
-        subtitle={formatDate(DATE)}
-        back
-        right={<span className="text-sm font-bold px-3 py-1 rounded-lg bg-amber-500/20 text-amber-400">{score}%</span>}
+    <div className="flex flex-col min-h-screen bg-cream-100">
+      <PageHeader title="Finances" subtitle={formatDate(DATE)} back
+        right={<span className="text-sm font-bold px-3 py-1 rounded-lg bg-navy-700/10 text-navy-700">{score}%</span>}
       />
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-4">
+
         {/* Summary */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'Income', value: entry.income, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-            { label: 'Expenses', value: totalExpenses, color: 'text-red-400', bg: 'bg-red-500/10' },
-            { label: 'Balance', value: balance, color: balance >= 0 ? 'text-brand-400' : 'text-red-400', bg: 'bg-slate-800' },
+            { label: 'Income',   value: entry.income,    color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
+            { label: 'Expenses', value: totalExpenses,   color: 'text-brand-500',   bg: 'bg-brand-50 border-brand-100' },
+            { label: 'Balance',  value: balance,         color: balance >= 0 ? 'text-navy-700' : 'text-brand-500', bg: 'bg-white border-peach-200' },
           ].map(c => (
-            <div key={c.label} className={`${c.bg} rounded-xl p-3 text-center`}>
-              <p className="text-xs text-slate-500 mb-1">{c.label}</p>
-              <p className={`text-base font-bold ${c.color}`}>{balance < 0 && c.label === 'Balance' ? '-' : '+'}{Math.abs(c.value).toFixed(0)}</p>
+            <div key={c.label} className={`${c.bg} border rounded-xl p-3 text-center`}>
+              <p className="text-xs text-warm-400 mb-1">{c.label}</p>
+              <p className={`text-base font-bold ${c.color}`}>{balance < 0 && c.label === 'Balance' ? '' : ''}{c.value.toFixed(0)}</p>
             </div>
           ))}
         </div>
 
         {/* Income */}
-        <div className="bg-slate-900 rounded-2xl p-4">
+        <div className="card">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp size={18} className="text-emerald-400" />
-            <h3 className="font-semibold text-slate-200">Income Today</h3>
+            <TrendingUp size={18} className="text-emerald-500" />
+            <h3 className="font-semibold text-navy-700">Income Today</h3>
           </div>
           <div className="flex gap-2">
             <input type="number" value={incomeInput} onChange={e => setIncomeInput(e.target.value)} placeholder="0.00" className="input-field flex-1" />
-            <button onClick={saveIncome} className="px-4 rounded-xl bg-emerald-500/20 text-emerald-400 text-sm font-medium active:bg-emerald-500/30">Save</button>
+            <button onClick={saveIncome} className="px-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm font-medium active:bg-emerald-100">Save</button>
           </div>
         </div>
 
         {/* Expenses */}
-        <div className="bg-slate-900 rounded-2xl p-4">
+        <div className="card">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <TrendingDown size={18} className="text-red-400" />
-              <h3 className="font-semibold text-slate-200">Expenses</h3>
+              <TrendingDown size={18} className="text-brand-500" />
+              <h3 className="font-semibold text-navy-700">Expenses</h3>
             </div>
-            <button onClick={() => setAddingExpense(true)} className="text-xs text-brand-400 flex items-center gap-1"><Plus size={14} />Add</button>
+            <button onClick={() => setAddingExpense(true)} className="text-xs text-brand-500 flex items-center gap-1"><Plus size={14} />Add</button>
           </div>
-          {entry.expenses.length === 0 && !addingExpense && <p className="text-sm text-slate-600 text-center py-3">No expenses logged</p>}
+          {entry.expenses.length === 0 && !addingExpense && <p className="text-sm text-warm-400 text-center py-3">No expenses logged</p>}
           <div className="space-y-2">
             {entry.expenses.map(exp => (
-              <div key={exp.id} className="flex items-center gap-3 bg-slate-800 rounded-xl px-3 py-2.5">
+              <div key={exp.id} className="flex items-center gap-3 bg-cream-100 border border-peach-200 rounded-xl px-3 py-2.5">
                 <div className="flex-1">
-                  <p className="text-sm text-slate-200">{exp.label}</p>
-                  <p className="text-xs text-slate-500">{exp.category}</p>
+                  <p className="text-sm text-navy-700">{exp.label}</p>
+                  <p className="text-xs text-warm-400">{exp.category}</p>
                 </div>
-                <span className="text-sm font-semibold text-red-400">-{exp.amount.toFixed(2)}</span>
-                <button onClick={() => save({ expenses: entry.expenses.filter(e => e.id !== exp.id) })} className="p-1 text-slate-700 active:text-red-400"><Trash2 size={14} /></button>
+                <span className="text-sm font-semibold text-brand-500">−{exp.amount.toFixed(2)}</span>
+                <button onClick={() => save({ expenses: entry.expenses.filter(e => e.id !== exp.id) })} className="p-1 text-peach-300 active:text-brand-500"><Trash2 size={14} /></button>
               </div>
             ))}
           </div>
           {addingExpense && (
-            <div className="mt-3 pt-3 border-t border-slate-800 space-y-2">
+            <div className="mt-3 pt-3 border-t border-peach-200 space-y-2">
               <input value={expLabel} onChange={e => setExpLabel(e.target.value)} placeholder="Description" className="input-field" />
               <div className="flex gap-2">
                 <input type="number" value={expAmount} onChange={e => setExpAmount(e.target.value)} placeholder="Amount" className="input-field flex-1" />
@@ -138,7 +132,7 @@ export default function FinancesPage() {
                 </select>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setAddingExpense(false)} className="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-400 text-sm">Cancel</button>
+                <button onClick={() => setAddingExpense(false)} className="flex-1 py-2.5 rounded-xl bg-peach-100 text-warm-600 text-sm">Cancel</button>
                 <button onClick={addExpense} className="flex-1 py-2.5 rounded-xl bg-brand-500 text-white text-sm">Add</button>
               </div>
             </div>
@@ -146,31 +140,34 @@ export default function FinancesPage() {
         </div>
 
         {/* Learning */}
-        <div className="bg-slate-900 rounded-2xl p-4">
+        <div className="card">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-slate-200">📚 Learning</h3>
-            <button onClick={() => setAddingLearn(true)} className="text-xs text-brand-400 flex items-center gap-1"><Plus size={14} />Add</button>
+            <h3 className="font-semibold text-navy-700">📚 Learning</h3>
+            <button onClick={() => setAddingLearn(true)} className="text-xs text-brand-500 flex items-center gap-1"><Plus size={14} />Add</button>
           </div>
-          {entry.learningItems.length === 0 && !addingLearn && <p className="text-sm text-slate-600 text-center py-3">No learning items</p>}
+          {entry.learningItems.length === 0 && !addingLearn && <p className="text-sm text-warm-400 text-center py-3">No learning items</p>}
           <div className="space-y-2">
             {entry.learningItems.map(item => (
-              <div key={item.id} className="flex items-center gap-3 bg-slate-800 rounded-xl px-3 py-2.5">
+              <div key={item.id} className="flex items-center gap-3 bg-cream-100 border border-peach-200 rounded-xl px-3 py-2.5">
                 <span className="text-sm">{item.type === 'course' ? '🎓' : item.type === 'book' ? '📖' : '🎧'}</span>
-                <p className="flex-1 text-sm text-slate-200">{item.title}</p>
-                <button onClick={() => save({ learningItems: entry.learningItems.filter(l => l.id !== item.id) })} className="p-1 text-slate-700 active:text-red-400"><Trash2 size={14} /></button>
+                <p className="flex-1 text-sm text-navy-700">{item.title}</p>
+                <button onClick={() => save({ learningItems: entry.learningItems.filter(l => l.id !== item.id) })} className="p-1 text-peach-300 active:text-brand-500"><Trash2 size={14} /></button>
               </div>
             ))}
           </div>
           {addingLearn && (
-            <div className="mt-3 pt-3 border-t border-slate-800 space-y-2">
+            <div className="mt-3 pt-3 border-t border-peach-200 space-y-2">
               <input value={learnTitle} onChange={e => setLearnTitle(e.target.value)} placeholder="Title" className="input-field" />
               <div className="flex gap-1.5 flex-wrap">
                 {LEARNING_TYPES.map(t => (
-                  <button key={t} onClick={() => setLearnType(t)} className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${learnType === t ? 'bg-brand-500 text-white' : 'bg-slate-800 text-slate-400'}`}>{t}</button>
+                  <button key={t} onClick={() => setLearnType(t)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
+                      learnType === t ? 'bg-brand-500 text-white border-brand-500' : 'bg-white text-warm-600 border-peach-200'
+                    }`}>{t}</button>
                 ))}
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setAddingLearn(false)} className="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-400 text-sm">Cancel</button>
+                <button onClick={() => setAddingLearn(false)} className="flex-1 py-2.5 rounded-xl bg-peach-100 text-warm-600 text-sm">Cancel</button>
                 <button onClick={addLearn} className="flex-1 py-2.5 rounded-xl bg-brand-500 text-white text-sm">Add</button>
               </div>
             </div>
